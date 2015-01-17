@@ -1,4 +1,4 @@
-package com.ediposouza.wifipasswordrecovery;
+package com.ediposouza.wifipasswordrecovery.ui;
 
 import java.util.Comparator;
 
