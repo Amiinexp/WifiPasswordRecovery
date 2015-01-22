@@ -27,17 +27,17 @@ public class HomeActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        PasswordAdapter mAdapter = new PasswordAdapter();
+        PasswordAdapter mPasswordAdapter = new PasswordAdapter();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(mAdapter);
+        recyclerView.setAdapter(mPasswordAdapter);
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             recyclerView.setItemAnimator(new CustomItemAnimator());
         }
 
-        GetPasswordsAsync getPasswordsAsync = new GetPasswordsAsync(mAdapter);
+        GetPasswordsAsync getPasswordsAsync = new GetPasswordsAsync(mPasswordAdapter);
         getPasswordsAsync.execute();
     }
 
