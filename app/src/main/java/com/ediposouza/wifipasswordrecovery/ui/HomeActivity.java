@@ -21,11 +21,14 @@ public class HomeActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.action_toolbar);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.password_recycle_view);
+
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         PasswordAdapter mAdapter = new PasswordAdapter();
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.password_recycle_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(mAdapter);
