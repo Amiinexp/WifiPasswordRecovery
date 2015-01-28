@@ -11,11 +11,11 @@ import java.util.List;
 /**
  * Created by ESS on 17/01/15.
  */
-public class GetPasswordsAsync extends AsyncTask<Void, Void, List<PasswordItem>> {
+public class ReadWifiPasswordsAsync extends AsyncTask<Void, Void, List<PasswordItem>> {
 
     private PasswordAdapter mAdapter;
 
-    public GetPasswordsAsync(PasswordAdapter mAdapter) {
+    public ReadWifiPasswordsAsync(PasswordAdapter mAdapter) {
         this.mAdapter = mAdapter;
     }
 

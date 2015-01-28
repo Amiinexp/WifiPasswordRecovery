@@ -55,6 +55,6 @@ public class PasswordViewHolder extends RecyclerView.ViewHolder implements View.
                     mContext.getSystemService(Context.CLIPBOARD_SERVICE);
             clipboard.setText(key);
         }
-        Toast.makeText(mContext, "Password Copied.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, mContext.getString(R.string.msg_password_copied), Toast.LENGTH_SHORT).show();
     }
 }

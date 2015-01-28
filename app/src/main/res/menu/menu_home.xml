@@ -6,13 +6,13 @@
     <item
         android:id="@+id/mnMore"
         android:title="@string/mn_more_apps"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/ic_shop_two_white_24dp"
         app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/mnAbout"
         android:title="@string/mn_about"
-        android:icon="@android:drawable/ic_menu_info_details"
+        android:icon="@drawable/ic_info_outline_white_24dp"
         app:showAsAction="ifRoom"/>
 
 </menu>

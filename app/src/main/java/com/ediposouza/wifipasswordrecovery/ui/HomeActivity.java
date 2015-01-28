@@ -13,34 +13,39 @@ import android.view.MenuItem;
 
 import com.ediposouza.wifipasswordrecovery.R;
 import com.ediposouza.wifipasswordrecovery.adapter.PasswordAdapter;
-import com.ediposouza.wifipasswordrecovery.sync.GetPasswordsAsync;
+import com.ediposouza.wifipasswordrecovery.sync.ReadWifiPasswordsAsync;
+import com.ediposouza.wifipasswordrecovery.ui.widget.DividerItemDecoration;
 import com.ediposouza.wifipasswordrecovery.ui.widget.SlideInLeftAnimator;
 
 public class HomeActivity extends ActionBarActivity {
+
+    private ReadWifiPasswordsAsync mReadWifiPasswordsAsync;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.action_toolbar);
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.password_recycle_view);
-
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-
         PasswordAdapter mPasswordAdapter = new PasswordAdapter();
+        mReadWifiPasswordsAsync = new ReadWifiPasswordsAsync(mPasswordAdapter);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.action_toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_action_lock_open);
+        setSupportActionBar(toolbar);
+
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.password_recycle_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setHasFixedSize(true);
+        recyclerView.addItemDecoration(new DividerItemDecoration(this));
         recyclerView.setAdapter(mPasswordAdapter);
-
+        recyclerView.setHasFixedSize(true);
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             recyclerView.setItemAnimator(new SlideInLeftAnimator());
         }
+    }
 
-        GetPasswordsAsync getPasswordsAsync = new GetPasswordsAsync(mPasswordAdapter);
-        getPasswordsAsync.execute();
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mReadWifiPasswordsAsync.execute();
     }
 
     @Override
@@ -54,13 +59,13 @@ public class HomeActivity extends ActionBarActivity {
         switch(item.getItemId()){
             case R.id.mnMore:{
                 Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse("https://play.google.com/store/apps/developer?id=Apps+By+%C3%89dipo"));
+                intent.setData(Uri.parse(getString(R.string.link_my_apps)));
                 startActivity(intent);
                 break;
             }
             case R.id.mnAbout:{
                 Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse("http://edipo.cf/wifi-password-recovery-no-google-play"));
+                intent.setData(Uri.parse(getString(R.string.link_about)));
                 startActivity(intent);
                 break;
             }

@@ -4,6 +4,11 @@
     <string name="app_name">Wifi Password Recovery</string>
     <string name="mn_more_apps">More Apps</string>
     <string name="mn_about">About me</string>
+
+    <string name="link_my_apps">https://play.google.com/store/apps/developer?id=Apps+By+Édipo</string>
+    <string name="link_about">http://ediposouza.com/wifi-password-recovery-no-google-play</string>
+
     <string name="msg_label_mssid_password">%s password</string>
+    <string name="msg_password_copied">Password Copied.</string>
 
 </resources>
