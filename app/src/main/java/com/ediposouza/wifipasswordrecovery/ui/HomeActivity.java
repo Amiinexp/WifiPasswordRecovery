@@ -10,27 +10,30 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.ediposouza.wifipasswordrecovery.R;
 import com.ediposouza.wifipasswordrecovery.adapter.PasswordAdapter;
-import com.ediposouza.wifipasswordrecovery.sync.ReadWifiPasswordsAsync;
+import com.ediposouza.wifipasswordrecovery.sync.CheckSUAsync;
 import com.ediposouza.wifipasswordrecovery.ui.widget.DividerItemDecoration;
 import com.ediposouza.wifipasswordrecovery.ui.widget.SlideInLeftAnimator;
+import com.ediposouza.wifipasswordrecovery.utils.HomeHandler;
 
 public class HomeActivity extends ActionBarActivity {
-
-    private ReadWifiPasswordsAsync mReadWifiPasswordsAsync;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        PasswordAdapter mPasswordAdapter = new PasswordAdapter();
-        mReadWifiPasswordsAsync = new ReadWifiPasswordsAsync(mPasswordAdapter);
+        TextView mLookingSU = (TextView) findViewById(R.id.looking_su);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.action_toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_action_lock_open);
+        PasswordAdapter mPasswordAdapter = new PasswordAdapter();
+        HomeHandler mHomeHandler = new HomeHandler(mPasswordAdapter);
+        CheckSUAsync checkSUAsync = new CheckSUAsync(mLookingSU, mHomeHandler);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_action_lock_open);
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.password_recycle_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -40,12 +43,8 @@ public class HomeActivity extends ActionBarActivity {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             recyclerView.setItemAnimator(new SlideInLeftAnimator());
         }
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mReadWifiPasswordsAsync.execute();
+        checkSUAsync.execute();
     }
 
     @Override

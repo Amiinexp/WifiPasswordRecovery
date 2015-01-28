@@ -8,6 +8,8 @@
     <string name="link_my_apps">https://play.google.com/store/apps/developer?id=Apps+By+Édipo</string>
     <string name="link_about">http://ediposouza.com/wifi-password-recovery-no-google-play</string>
 
+    <string name="textview_looking_su">Looking for SU...</string>
+
     <string name="msg_label_mssid_password">%s password</string>
     <string name="msg_password_copied">Password Copied.</string>
 

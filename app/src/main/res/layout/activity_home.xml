@@ -4,17 +4,28 @@
     android:layout_height="match_parent"
     tools:context=".HomeActivity">
 
-    <include layout="@layout/action_toolbar"/>
+    <include layout="@layout/include_toolbar"
+        android:id="@+id/toolbar"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/password_recycle_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/action_toolbar"
+        android:layout_below="@id/toolbar"
         android:background="@color/cardview_light_background"
         android:paddingTop="@dimen/list_padding_top"
         android:paddingBottom="@dimen/list_padding_top">
 
     </android.support.v7.widget.RecyclerView>
+
+    <TextView
+        android:id="@+id/looking_su"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@color/secondary_text"
+        android:textSize="32sp"
+        android:text="@string/textview_looking_su"/>
 
 </RelativeLayout>
