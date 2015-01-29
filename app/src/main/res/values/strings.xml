@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name">Wifi Password Recovery</string>
+
     <string name="mn_more_apps">More Apps</string>
     <string name="mn_about">About me</string>
 
@@ -9,6 +10,7 @@
     <string name="link_about">http://ediposouza.com/wifi-password-recovery-no-google-play</string>
 
     <string name="textview_looking_su">Looking for SU...</string>
+    <string name="textview_su_not_found">SU not Found!</string>
 
     <string name="msg_label_mssid_password">%s password</string>
     <string name="msg_password_copied">Password Copied.</string>

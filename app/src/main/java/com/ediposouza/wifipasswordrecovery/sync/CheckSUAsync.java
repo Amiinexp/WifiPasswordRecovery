@@ -2,8 +2,6 @@ package com.ediposouza.wifipasswordrecovery.sync;
 
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.view.View;
-import android.widget.TextView;
 
 import com.ediposouza.wifipasswordrecovery.utils.HomeHandler;
 
@@ -14,11 +12,9 @@ import eu.chainfire.libsuperuser.Shell;
  */
 public class CheckSUAsync extends AsyncTask<Void, Void, Boolean> {
 
-    private final TextView mLookingSU;
-    private Handler mHandler;
+    private final Handler mHandler;
 
-    public CheckSUAsync(TextView lookingSU, Handler handler) {
-        this.mLookingSU = lookingSU;
+    public CheckSUAsync(Handler handler) {
         this.mHandler = handler;
     }
 
@@ -30,7 +26,7 @@ public class CheckSUAsync extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean available) {
         super.onPostExecute(available);
-        mLookingSU.setVisibility(View.GONE);
-        mHandler.sendEmptyMessage(HomeHandler.MSG_READ_PASSWORDS);
+        int msgWhat = available ? HomeHandler.MSG_READ_PASSWORDS : HomeHandler.MSG_NO_ROOT_FOUND;
+        mHandler.sendEmptyMessage(msgWhat);
     }
 }

@@ -28,8 +28,8 @@ public class HomeActivity extends ActionBarActivity {
         TextView mLookingSU = (TextView) findViewById(R.id.looking_su);
 
         PasswordAdapter mPasswordAdapter = new PasswordAdapter();
-        HomeHandler mHomeHandler = new HomeHandler(mPasswordAdapter);
-        CheckSUAsync checkSUAsync = new CheckSUAsync(mLookingSU, mHomeHandler);
+        HomeHandler mHomeHandler = new HomeHandler(mLookingSU, mPasswordAdapter);
+        CheckSUAsync checkSUAsync = new CheckSUAsync(mHomeHandler);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
