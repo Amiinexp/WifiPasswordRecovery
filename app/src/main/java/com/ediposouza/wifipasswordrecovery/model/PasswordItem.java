@@ -5,8 +5,8 @@ package com.ediposouza.wifipasswordrecovery.model;
  */
 public class PasswordItem {
 
-    private String mSSID;
-    private String mKey;
+    private final String mSSID;
+    private final String mKey;
 
     public PasswordItem(String mSSID, String mKey) {
         this.mSSID = mSSID;

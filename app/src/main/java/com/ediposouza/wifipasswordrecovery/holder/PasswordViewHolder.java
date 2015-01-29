@@ -12,8 +12,6 @@ import android.widget.Toast;
 import com.ediposouza.wifipasswordrecovery.R;
 import com.ediposouza.wifipasswordrecovery.model.PasswordItem;
 
-import java.util.Iterator;
-
 /**
  * Created by ESS on 17/01/15.
  */
@@ -21,8 +19,8 @@ public class PasswordViewHolder extends RecyclerView.ViewHolder implements View.
 
     private final Context mContext;
 
-    private TextView mSSID;
-    private TextView mKey;
+    private final TextView mSSID;
+    private final TextView mKey;
 
     public PasswordViewHolder(Context context, View itemView) {
         super(itemView);

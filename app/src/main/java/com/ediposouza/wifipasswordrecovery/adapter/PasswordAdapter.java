@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class PasswordAdapter extends RecyclerView.Adapter<PasswordViewHolder> {
 
-    private List<PasswordItem> mList = new ArrayList<>();
+    private final List<PasswordItem> mList = new ArrayList<>();
 
     @Override
     public PasswordViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

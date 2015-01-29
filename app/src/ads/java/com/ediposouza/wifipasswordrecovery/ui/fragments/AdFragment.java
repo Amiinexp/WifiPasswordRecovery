@@ -1,8 +1,6 @@
 package com.ediposouza.wifipasswordrecovery.ui.fragments;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -40,8 +38,11 @@ public class AdFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        AdView mAdView = (AdView) getView().findViewById(R.id.adView);
-        mAdView.loadAd(adRequest);
+        View view = getView();
+        if(view != null) {
+            AdView mAdView = (AdView) view.findViewById(R.id.adView);
+            mAdView.loadAd(adRequest);
+        }
 
     }
 

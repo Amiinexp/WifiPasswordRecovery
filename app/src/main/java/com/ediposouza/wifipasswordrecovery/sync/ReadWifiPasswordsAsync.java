@@ -23,7 +23,7 @@ public class ReadWifiPasswordsAsync extends AsyncTask<Void, Void, List<PasswordI
     private static final String PSK_FIELD = "psk";
     private static final String WEP_KEY_FIELD = "wep_key";
 
-    private PasswordAdapter mAdapter;
+    private final PasswordAdapter mAdapter;
 
     public ReadWifiPasswordsAsync(PasswordAdapter mAdapter) {
         this.mAdapter = mAdapter;

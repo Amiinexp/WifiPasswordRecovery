@@ -19,7 +19,7 @@ public class HomeHandler extends Handler {
     public static final int MSG_READ_PASSWORDS = 1;
 
     private final TextView mLookingSU;
-    private ReadWifiPasswordsAsync mReadWifiPasswordsAsync;
+    private final ReadWifiPasswordsAsync mReadWifiPasswordsAsync;
 
     public HomeHandler(TextView lookingSU, PasswordAdapter passwordAdapter){
         this.mLookingSU = lookingSU;

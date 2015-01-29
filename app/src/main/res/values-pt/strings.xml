@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Wifi Password Recovery</string>
+    <string name="app_name">Wifi Password Recovery Free</string>
     <string name="mn_more_apps">Mais Apps</string>
     <string name="mn_about">Sobre mim</string>
     <string name="msg_label_mssid_password">%s senha</string>
+    <string name="msg_password_copied">Senha Copiada.</string>
+    <string name="textview_looking_su">Buscando SU…</string>
+    <string name="textview_su_not_found">Su não encontrado!</string>
 </resources>
