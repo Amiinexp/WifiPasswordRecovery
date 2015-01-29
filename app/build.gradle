@@ -23,6 +23,7 @@ android {
     }
     productFlavors {
         full {
+            applicationId "com.ediposouza.wifi_pass_rec"
         }
         ads {
         }
