@@ -49,7 +49,7 @@ public class PasswordViewHolder extends RecyclerView.ViewHolder implements View.
                     mContext.getSystemService(Context.CLIPBOARD_SERVICE);
             clipboard.setPrimaryClip(ClipData.newPlainText(label, key));
         }else{
-            android.text.ClipboardManager clipboard= (android.text.ClipboardManager)
+            android.text.ClipboardManager clipboard = (android.text.ClipboardManager)
                     mContext.getSystemService(Context.CLIPBOARD_SERVICE);
             clipboard.setText(key);
         }

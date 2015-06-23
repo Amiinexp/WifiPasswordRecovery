@@ -4,6 +4,12 @@
     tools:context=".HomeActivity">
 
     <item
+        android:id="@+id/mnBuy"
+        android:title="@string/mn_buy_pro"
+        android:icon="@drawable/ic_shopping_cart_white_18dp"
+        app:showAsAction="ifRoom"/>
+
+    <item
         android:id="@+id/mnMore"
         android:title="@string/mn_more_apps"
         android:icon="@drawable/ic_shop_two_white_24dp"

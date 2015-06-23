@@ -57,7 +57,9 @@ public class ReadWifiPasswordsAsync extends AsyncTask<Void, Void, List<PasswordI
                     }
                 }
             }catch(Exception e){
-                Log.e("WPR ERROR", e.getMessage());
+                if (e.getMessage() != null) {
+                    Log.e("WPR ERROR", e.getMessage());
+                }
             }
         }
         return passwordsItems;
