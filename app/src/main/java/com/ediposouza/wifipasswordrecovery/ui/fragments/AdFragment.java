@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ediposouza.wifipasswordrecovery.R;
+import com.ediposouza.wifipasswordrecovery.WPRApp;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
@@ -16,6 +17,8 @@ import com.google.android.gms.ads.InterstitialAd;
  * Created by edipo2s on 1/28/15.
  */
 public class AdFragment extends Fragment {
+
+    public static final String iabpb = "/jYYPaeGCFm7t6k4XqZAVGDVMBV1MBq0F9UcCqJnijg5F/6WbvpX9bK5m76KjUccfdBmDMXyBVbZiICwIDAQAB";
 
     private AdRequest adRequest;
     private InterstitialAd interstitial;
@@ -39,7 +42,7 @@ public class AdFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         View view = getView();
-        if(view != null) {
+        if (view != null) {
             AdView mAdView = (AdView) view.findViewById(R.id.adView);
             mAdView.loadAd(adRequest);
         }
@@ -49,7 +52,7 @@ public class AdFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (interstitial.isLoaded()) {
+        if (!WPRApp.proVersion && interstitial.isLoaded()) {
             interstitial.show();
         }
     }

@@ -31,67 +31,18 @@ import java.util.List;
 public abstract class BaseItemAnimator extends RecyclerView.ItemAnimator {
 
     private static final boolean DEBUG = false;
-
+    protected ArrayList<ViewHolder> mAddAnimations = new ArrayList<>();
+    protected ArrayList<ViewHolder> mRemoveAnimations = new ArrayList<>();
     private ArrayList<ViewHolder> mPendingRemovals = new ArrayList<>();
     private ArrayList<ViewHolder> mPendingAdditions = new ArrayList<>();
     private ArrayList<MoveInfo> mPendingMoves = new ArrayList<>();
     private ArrayList<ChangeInfo> mPendingChanges = new ArrayList<>();
-
     private ArrayList<ArrayList<ViewHolder>> mAdditionsList =
             new ArrayList<>();
     private ArrayList<ArrayList<MoveInfo>> mMovesList = new ArrayList<>();
     private ArrayList<ArrayList<ChangeInfo>> mChangesList = new ArrayList<>();
-
-    protected ArrayList<ViewHolder> mAddAnimations = new ArrayList<>();
     private ArrayList<ViewHolder> mMoveAnimations = new ArrayList<>();
-    protected ArrayList<ViewHolder> mRemoveAnimations = new ArrayList<>();
     private ArrayList<ViewHolder> mChangeAnimations = new ArrayList<>();
-
-    private static class MoveInfo {
-
-        public ViewHolder holder;
-        public int fromX, fromY, toX, toY;
-
-        private MoveInfo(ViewHolder holder, int fromX, int fromY, int toX, int toY) {
-            this.holder = holder;
-            this.fromX = fromX;
-            this.fromY = fromY;
-            this.toX = toX;
-            this.toY = toY;
-        }
-    }
-
-    private static class ChangeInfo {
-
-        public ViewHolder oldHolder, newHolder;
-        public int fromX, fromY, toX, toY;
-
-        private ChangeInfo(ViewHolder oldHolder, ViewHolder newHolder) {
-            this.oldHolder = oldHolder;
-            this.newHolder = newHolder;
-        }
-
-        private ChangeInfo(ViewHolder oldHolder, ViewHolder newHolder,
-                int fromX, int fromY, int toX, int toY) {
-            this(oldHolder, newHolder);
-            this.fromX = fromX;
-            this.fromY = fromY;
-            this.toX = toX;
-            this.toY = toY;
-        }
-
-        @Override
-        public String toString() {
-            return "ChangeInfo{" +
-                    "oldHolder=" + oldHolder +
-                    ", newHolder=" + newHolder +
-                    ", fromX=" + fromX +
-                    ", fromY=" + fromY +
-                    ", toX=" + toX +
-                    ", toY=" + toY +
-                    '}';
-        }
-    }
 
     @Override
     public void runPendingAnimations() {
@@ -183,16 +134,6 @@ public abstract class BaseItemAnimator extends RecyclerView.ItemAnimator {
         }
     }
 
-    protected abstract void animateRemoveImpl(final ViewHolder holder);
-
-    protected abstract void animateAddImpl(final ViewHolder holder);
-
-    protected void preAnimateRemove(final ViewHolder holder) {
-    }
-
-    protected void preAnimateAdd(final ViewHolder holder) {
-    }
-
     @Override
     public boolean animateRemove(final ViewHolder holder) {
         endAnimation(holder);
@@ -211,7 +152,7 @@ public abstract class BaseItemAnimator extends RecyclerView.ItemAnimator {
 
     @Override
     public boolean animateMove(final ViewHolder holder, int fromX, int fromY,
-            int toX, int toY) {
+                               int toX, int toY) {
         final View view = holder.itemView;
         fromX += ViewCompat.getTranslationX(holder.itemView);
         fromY += ViewCompat.getTranslationY(holder.itemView);
@@ -230,6 +171,223 @@ public abstract class BaseItemAnimator extends RecyclerView.ItemAnimator {
         }
         mPendingMoves.add(new MoveInfo(holder, fromX, fromY, toX, toY));
         return true;
+    }
+
+    @Override
+    public boolean animateChange(ViewHolder oldHolder, ViewHolder newHolder,
+                                 int fromX, int fromY, int toX, int toY) {
+        final float prevTranslationX = ViewCompat.getTranslationX(oldHolder.itemView);
+        final float prevTranslationY = ViewCompat.getTranslationY(oldHolder.itemView);
+        final float prevAlpha = ViewCompat.getAlpha(oldHolder.itemView);
+        endAnimation(oldHolder);
+        int deltaX = (int) (toX - fromX - prevTranslationX);
+        int deltaY = (int) (toY - fromY - prevTranslationY);
+        // recover prev translation state after ending animation
+        ViewCompat.setTranslationX(oldHolder.itemView, prevTranslationX);
+        ViewCompat.setTranslationY(oldHolder.itemView, prevTranslationY);
+        ViewCompat.setAlpha(oldHolder.itemView, prevAlpha);
+        if (newHolder != null && newHolder.itemView != null) {
+            // carry over translation values
+            endAnimation(newHolder);
+            ViewCompat.setTranslationX(newHolder.itemView, -deltaX);
+            ViewCompat.setTranslationY(newHolder.itemView, -deltaY);
+            ViewCompat.setAlpha(newHolder.itemView, 0);
+        }
+        mPendingChanges.add(new ChangeInfo(oldHolder, newHolder, fromX, fromY, toX, toY));
+        return true;
+    }
+
+    @Override
+    public void endAnimation(ViewHolder item) {
+        final View view = item.itemView;
+        // this will trigger end callback which should set properties to their target values.
+        ViewCompat.animate(view).cancel();
+        // TODO if some other animations are chained to end, how do we cancel them as well?
+        for (int i = mPendingMoves.size() - 1; i >= 0; i--) {
+            MoveInfo moveInfo = mPendingMoves.get(i);
+            if (moveInfo.holder == item) {
+                ViewCompat.setTranslationY(view, 0);
+                ViewCompat.setTranslationX(view, 0);
+                dispatchMoveFinished(item);
+                mPendingMoves.remove(i);
+            }
+        }
+        endChangeAnimation(mPendingChanges, item);
+        if (mPendingRemovals.remove(item)) {
+            reset(item.itemView);
+            dispatchRemoveFinished(item);
+        }
+        if (mPendingAdditions.remove(item)) {
+            reset(item.itemView);
+            dispatchAddFinished(item);
+        }
+
+        for (int i = mChangesList.size() - 1; i >= 0; i--) {
+            ArrayList<ChangeInfo> changes = mChangesList.get(i);
+            endChangeAnimation(changes, item);
+            if (changes.isEmpty()) {
+                mChangesList.remove(i);
+            }
+        }
+        for (int i = mMovesList.size() - 1; i >= 0; i--) {
+            ArrayList<MoveInfo> moves = mMovesList.get(i);
+            for (int j = moves.size() - 1; j >= 0; j--) {
+                MoveInfo moveInfo = moves.get(j);
+                if (moveInfo.holder == item) {
+                    ViewCompat.setTranslationY(view, 0);
+                    ViewCompat.setTranslationX(view, 0);
+                    dispatchMoveFinished(item);
+                    moves.remove(j);
+                    if (moves.isEmpty()) {
+                        mMovesList.remove(i);
+                    }
+                    break;
+                }
+            }
+        }
+        for (int i = mAdditionsList.size() - 1; i >= 0; i--) {
+            ArrayList<ViewHolder> additions = mAdditionsList.get(i);
+            if (additions.remove(item)) {
+                reset(item.itemView);
+                dispatchAddFinished(item);
+                if (additions.isEmpty()) {
+                    mAdditionsList.remove(i);
+                }
+            }
+        }
+
+        // animations should be ended by the cancel above.
+        if (mRemoveAnimations.remove(item) && DEBUG) {
+            throw new IllegalStateException("after animation is cancelled, item should not be in "
+                    + "mRemoveAnimations list");
+        }
+
+        if (mAddAnimations.remove(item) && DEBUG) {
+            throw new IllegalStateException("after animation is cancelled, item should not be in "
+                    + "mAddAnimations list");
+        }
+
+        if (mChangeAnimations.remove(item) && DEBUG) {
+            throw new IllegalStateException("after animation is cancelled, item should not be in "
+                    + "mChangeAnimations list");
+        }
+
+        if (mMoveAnimations.remove(item) && DEBUG) {
+            throw new IllegalStateException("after animation is cancelled, item should not be in "
+                    + "mMoveAnimations list");
+        }
+        dispatchFinishedWhenDone();
+    }
+
+    @Override
+    public void endAnimations() {
+        int count = mPendingMoves.size();
+        for (int i = count - 1; i >= 0; i--) {
+            MoveInfo item = mPendingMoves.get(i);
+            View view = item.holder.itemView;
+            ViewCompat.setTranslationY(view, 0);
+            ViewCompat.setTranslationX(view, 0);
+            dispatchMoveFinished(item.holder);
+            mPendingMoves.remove(i);
+        }
+        count = mPendingRemovals.size();
+        for (int i = count - 1; i >= 0; i--) {
+            ViewHolder item = mPendingRemovals.get(i);
+            dispatchRemoveFinished(item);
+            mPendingRemovals.remove(i);
+        }
+        count = mPendingAdditions.size();
+        for (int i = count - 1; i >= 0; i--) {
+            ViewHolder item = mPendingAdditions.get(i);
+            View view = item.itemView;
+            reset(item.itemView);
+            dispatchAddFinished(item);
+            mPendingAdditions.remove(i);
+        }
+        count = mPendingChanges.size();
+        for (int i = count - 1; i >= 0; i--) {
+            endChangeAnimationIfNecessary(mPendingChanges.get(i));
+        }
+        mPendingChanges.clear();
+        if (!isRunning()) {
+            return;
+        }
+
+        int listCount = mMovesList.size();
+        for (int i = listCount - 1; i >= 0; i--) {
+            ArrayList<MoveInfo> moves = mMovesList.get(i);
+            count = moves.size();
+            for (int j = count - 1; j >= 0; j--) {
+                MoveInfo moveInfo = moves.get(j);
+                ViewHolder item = moveInfo.holder;
+                View view = item.itemView;
+                ViewCompat.setTranslationY(view, 0);
+                ViewCompat.setTranslationX(view, 0);
+                dispatchMoveFinished(moveInfo.holder);
+                moves.remove(j);
+                if (moves.isEmpty()) {
+                    mMovesList.remove(moves);
+                }
+            }
+        }
+        listCount = mAdditionsList.size();
+        for (int i = listCount - 1; i >= 0; i--) {
+            ArrayList<ViewHolder> additions = mAdditionsList.get(i);
+            count = additions.size();
+            for (int j = count - 1; j >= 0; j--) {
+                ViewHolder item = additions.get(j);
+                View view = item.itemView;
+                ViewCompat.setAlpha(view, 1);
+                dispatchAddFinished(item);
+                additions.remove(j);
+                if (additions.isEmpty()) {
+                    mAdditionsList.remove(additions);
+                }
+            }
+        }
+        listCount = mChangesList.size();
+        for (int i = listCount - 1; i >= 0; i--) {
+            ArrayList<ChangeInfo> changes = mChangesList.get(i);
+            count = changes.size();
+            for (int j = count - 1; j >= 0; j--) {
+                endChangeAnimationIfNecessary(changes.get(j));
+                if (changes.isEmpty()) {
+                    mChangesList.remove(changes);
+                }
+            }
+        }
+
+        cancelAll(mRemoveAnimations);
+        cancelAll(mMoveAnimations);
+        cancelAll(mAddAnimations);
+        cancelAll(mChangeAnimations);
+
+        dispatchAnimationsFinished();
+    }
+
+    @Override
+    public boolean isRunning() {
+        return (!mPendingAdditions.isEmpty() ||
+                !mPendingChanges.isEmpty() ||
+                !mPendingMoves.isEmpty() ||
+                !mPendingRemovals.isEmpty() ||
+                !mMoveAnimations.isEmpty() ||
+                !mRemoveAnimations.isEmpty() ||
+                !mAddAnimations.isEmpty() ||
+                !mChangeAnimations.isEmpty() ||
+                !mMovesList.isEmpty() ||
+                !mAdditionsList.isEmpty() ||
+                !mChangesList.isEmpty());
+    }
+
+    protected abstract void animateRemoveImpl(final ViewHolder holder);
+
+    protected abstract void animateAddImpl(final ViewHolder holder);
+
+    protected void preAnimateRemove(final ViewHolder holder) {
+    }
+
+    protected void preAnimateAdd(final ViewHolder holder) {
     }
 
     private void animateMoveImpl(final ViewHolder holder, int fromX, int fromY, int toX, int toY) {
@@ -271,30 +429,6 @@ public abstract class BaseItemAnimator extends RecyclerView.ItemAnimator {
                 dispatchFinishedWhenDone();
             }
         }).start();
-    }
-
-    @Override
-    public boolean animateChange(ViewHolder oldHolder, ViewHolder newHolder,
-            int fromX, int fromY, int toX, int toY) {
-        final float prevTranslationX = ViewCompat.getTranslationX(oldHolder.itemView);
-        final float prevTranslationY = ViewCompat.getTranslationY(oldHolder.itemView);
-        final float prevAlpha = ViewCompat.getAlpha(oldHolder.itemView);
-        endAnimation(oldHolder);
-        int deltaX = (int) (toX - fromX - prevTranslationX);
-        int deltaY = (int) (toY - fromY - prevTranslationY);
-        // recover prev translation state after ending animation
-        ViewCompat.setTranslationX(oldHolder.itemView, prevTranslationX);
-        ViewCompat.setTranslationY(oldHolder.itemView, prevTranslationY);
-        ViewCompat.setAlpha(oldHolder.itemView, prevAlpha);
-        if (newHolder != null && newHolder.itemView != null) {
-            // carry over translation values
-            endAnimation(newHolder);
-            ViewCompat.setTranslationX(newHolder.itemView, -deltaX);
-            ViewCompat.setTranslationY(newHolder.itemView, -deltaY);
-            ViewCompat.setAlpha(newHolder.itemView, 0);
-        }
-        mPendingChanges.add(new ChangeInfo(oldHolder, newHolder, fromX, fromY, toX, toY));
-        return true;
     }
 
     private void animateChangeImpl(final ChangeInfo changeInfo) {
@@ -387,103 +521,6 @@ public abstract class BaseItemAnimator extends RecyclerView.ItemAnimator {
         return true;
     }
 
-    @Override
-    public void endAnimation(ViewHolder item) {
-        final View view = item.itemView;
-        // this will trigger end callback which should set properties to their target values.
-        ViewCompat.animate(view).cancel();
-        // TODO if some other animations are chained to end, how do we cancel them as well?
-        for (int i = mPendingMoves.size() - 1; i >= 0; i--) {
-            MoveInfo moveInfo = mPendingMoves.get(i);
-            if (moveInfo.holder == item) {
-                ViewCompat.setTranslationY(view, 0);
-                ViewCompat.setTranslationX(view, 0);
-                dispatchMoveFinished(item);
-                mPendingMoves.remove(i);
-            }
-        }
-        endChangeAnimation(mPendingChanges, item);
-        if (mPendingRemovals.remove(item)) {
-            reset(item.itemView);
-            dispatchRemoveFinished(item);
-        }
-        if (mPendingAdditions.remove(item)) {
-            reset(item.itemView);
-            dispatchAddFinished(item);
-        }
-
-        for (int i = mChangesList.size() - 1; i >= 0; i--) {
-            ArrayList<ChangeInfo> changes = mChangesList.get(i);
-            endChangeAnimation(changes, item);
-            if (changes.isEmpty()) {
-                mChangesList.remove(i);
-            }
-        }
-        for (int i = mMovesList.size() - 1; i >= 0; i--) {
-            ArrayList<MoveInfo> moves = mMovesList.get(i);
-            for (int j = moves.size() - 1; j >= 0; j--) {
-                MoveInfo moveInfo = moves.get(j);
-                if (moveInfo.holder == item) {
-                    ViewCompat.setTranslationY(view, 0);
-                    ViewCompat.setTranslationX(view, 0);
-                    dispatchMoveFinished(item);
-                    moves.remove(j);
-                    if (moves.isEmpty()) {
-                        mMovesList.remove(i);
-                    }
-                    break;
-                }
-            }
-        }
-        for (int i = mAdditionsList.size() - 1; i >= 0; i--) {
-            ArrayList<ViewHolder> additions = mAdditionsList.get(i);
-            if (additions.remove(item)) {
-                reset(item.itemView);
-                dispatchAddFinished(item);
-                if (additions.isEmpty()) {
-                    mAdditionsList.remove(i);
-                }
-            }
-        }
-
-        // animations should be ended by the cancel above.
-        if (mRemoveAnimations.remove(item) && DEBUG) {
-            throw new IllegalStateException("after animation is cancelled, item should not be in "
-                    + "mRemoveAnimations list");
-        }
-
-        if (mAddAnimations.remove(item) && DEBUG) {
-            throw new IllegalStateException("after animation is cancelled, item should not be in "
-                    + "mAddAnimations list");
-        }
-
-        if (mChangeAnimations.remove(item) && DEBUG) {
-            throw new IllegalStateException("after animation is cancelled, item should not be in "
-                    + "mChangeAnimations list");
-        }
-
-        if (mMoveAnimations.remove(item) && DEBUG) {
-            throw new IllegalStateException("after animation is cancelled, item should not be in "
-                    + "mMoveAnimations list");
-        }
-        dispatchFinishedWhenDone();
-    }
-
-    @Override
-    public boolean isRunning() {
-        return (!mPendingAdditions.isEmpty() ||
-                !mPendingChanges.isEmpty() ||
-                !mPendingMoves.isEmpty() ||
-                !mPendingRemovals.isEmpty() ||
-                !mMoveAnimations.isEmpty() ||
-                !mRemoveAnimations.isEmpty() ||
-                !mAddAnimations.isEmpty() ||
-                !mChangeAnimations.isEmpty() ||
-                !mMovesList.isEmpty() ||
-                !mAdditionsList.isEmpty() ||
-                !mChangesList.isEmpty());
-    }
-
     /**
      * Check the state of currently pending and running animations. If there are none
      * pending/running, call #dispatchAnimationsFinished() to notify any
@@ -493,92 +530,6 @@ public abstract class BaseItemAnimator extends RecyclerView.ItemAnimator {
         if (!isRunning()) {
             dispatchAnimationsFinished();
         }
-    }
-
-    @Override
-    public void endAnimations() {
-        int count = mPendingMoves.size();
-        for (int i = count - 1; i >= 0; i--) {
-            MoveInfo item = mPendingMoves.get(i);
-            View view = item.holder.itemView;
-            ViewCompat.setTranslationY(view, 0);
-            ViewCompat.setTranslationX(view, 0);
-            dispatchMoveFinished(item.holder);
-            mPendingMoves.remove(i);
-        }
-        count = mPendingRemovals.size();
-        for (int i = count - 1; i >= 0; i--) {
-            ViewHolder item = mPendingRemovals.get(i);
-            dispatchRemoveFinished(item);
-            mPendingRemovals.remove(i);
-        }
-        count = mPendingAdditions.size();
-        for (int i = count - 1; i >= 0; i--) {
-            ViewHolder item = mPendingAdditions.get(i);
-            View view = item.itemView;
-            reset(item.itemView);
-            dispatchAddFinished(item);
-            mPendingAdditions.remove(i);
-        }
-        count = mPendingChanges.size();
-        for (int i = count - 1; i >= 0; i--) {
-            endChangeAnimationIfNecessary(mPendingChanges.get(i));
-        }
-        mPendingChanges.clear();
-        if (!isRunning()) {
-            return;
-        }
-
-        int listCount = mMovesList.size();
-        for (int i = listCount - 1; i >= 0; i--) {
-            ArrayList<MoveInfo> moves = mMovesList.get(i);
-            count = moves.size();
-            for (int j = count - 1; j >= 0; j--) {
-                MoveInfo moveInfo = moves.get(j);
-                ViewHolder item = moveInfo.holder;
-                View view = item.itemView;
-                ViewCompat.setTranslationY(view, 0);
-                ViewCompat.setTranslationX(view, 0);
-                dispatchMoveFinished(moveInfo.holder);
-                moves.remove(j);
-                if (moves.isEmpty()) {
-                    mMovesList.remove(moves);
-                }
-            }
-        }
-        listCount = mAdditionsList.size();
-        for (int i = listCount - 1; i >= 0; i--) {
-            ArrayList<ViewHolder> additions = mAdditionsList.get(i);
-            count = additions.size();
-            for (int j = count - 1; j >= 0; j--) {
-                ViewHolder item = additions.get(j);
-                View view = item.itemView;
-                ViewCompat.setAlpha(view, 1);
-                dispatchAddFinished(item);
-                additions.remove(j);
-                if (additions.isEmpty()) {
-                    mAdditionsList.remove(additions);
-                }
-            }
-        }
-        listCount = mChangesList.size();
-        for (int i = listCount - 1; i >= 0; i--) {
-            ArrayList<ChangeInfo> changes = mChangesList.get(i);
-            count = changes.size();
-            for (int j = count - 1; j >= 0; j--) {
-                endChangeAnimationIfNecessary(changes.get(j));
-                if (changes.isEmpty()) {
-                    mChangesList.remove(changes);
-                }
-            }
-        }
-
-        cancelAll(mRemoveAnimations);
-        cancelAll(mMoveAnimations);
-        cancelAll(mAddAnimations);
-        cancelAll(mChangeAnimations);
-
-        dispatchAnimationsFinished();
     }
 
     void cancelAll(List<ViewHolder> viewHolders) {
@@ -596,11 +547,57 @@ public abstract class BaseItemAnimator extends RecyclerView.ItemAnimator {
         ViewCompat.setRotation(v, 0);
         ViewCompat.setRotationY(v, 0);
         ViewCompat.setRotationX(v, 0);
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             v.setPivotX(v.getMeasuredWidth() / 2);
             v.setPivotY(v.getMeasuredHeight() / 2);
         }
         ViewCompat.animate(v).setInterpolator(null);
+    }
+
+    private static class MoveInfo {
+
+        public ViewHolder holder;
+        public int fromX, fromY, toX, toY;
+
+        private MoveInfo(ViewHolder holder, int fromX, int fromY, int toX, int toY) {
+            this.holder = holder;
+            this.fromX = fromX;
+            this.fromY = fromY;
+            this.toX = toX;
+            this.toY = toY;
+        }
+    }
+
+    private static class ChangeInfo {
+
+        public ViewHolder oldHolder, newHolder;
+        public int fromX, fromY, toX, toY;
+
+        private ChangeInfo(ViewHolder oldHolder, ViewHolder newHolder) {
+            this.oldHolder = oldHolder;
+            this.newHolder = newHolder;
+        }
+
+        private ChangeInfo(ViewHolder oldHolder, ViewHolder newHolder,
+                           int fromX, int fromY, int toX, int toY) {
+            this(oldHolder, newHolder);
+            this.fromX = fromX;
+            this.fromY = fromY;
+            this.toX = toX;
+            this.toY = toY;
+        }
+
+        @Override
+        public String toString() {
+            return "ChangeInfo{" +
+                    "oldHolder=" + oldHolder +
+                    ", newHolder=" + newHolder +
+                    ", fromX=" + fromX +
+                    ", fromY=" + fromY +
+                    ", toX=" + toX +
+                    ", toY=" + toY +
+                    '}';
+        }
     }
 
     private static class VpaListenerAdapter implements ViewPropertyAnimatorListener {

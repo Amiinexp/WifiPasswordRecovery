@@ -1,4 +1,4 @@
-package com.ediposouza.wifipasswordrecovery.holder;
+package com.ediposouza.wifipasswordrecovery.ui.holder;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -31,8 +31,8 @@ public class PasswordViewHolder extends RecyclerView.ViewHolder implements View.
         itemView.setOnClickListener(this);
     }
 
-    public void bind(PasswordItem passwordItem){
-        if(passwordItem == null){
+    public void bind(PasswordItem passwordItem) {
+        if (passwordItem == null) {
             return;
         }
         mSSID.setText(passwordItem.getSSID());
@@ -43,16 +43,16 @@ public class PasswordViewHolder extends RecyclerView.ViewHolder implements View.
     public void onClick(View v) {
         String key = mKey.getText().toString();
         String ssid = mSSID.getText().toString();
-        String label = String.format(mContext.getString(R.string.msg_label_mssid_password), ssid);
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+        String label = String.format(mContext.getString(R.string.label_ssid_password), ssid);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             ClipboardManager clipboard = (ClipboardManager)
                     mContext.getSystemService(Context.CLIPBOARD_SERVICE);
             clipboard.setPrimaryClip(ClipData.newPlainText(label, key));
-        }else{
+        } else {
             android.text.ClipboardManager clipboard = (android.text.ClipboardManager)
                     mContext.getSystemService(Context.CLIPBOARD_SERVICE);
             clipboard.setText(key);
         }
-        Toast.makeText(mContext, mContext.getString(R.string.msg_password_copied), Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, mContext.getString(R.string.wpr_password_copied), Toast.LENGTH_SHORT).show();
     }
 }

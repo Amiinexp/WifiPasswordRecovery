@@ -4,9 +4,17 @@
     android:layout_height="match_parent"
     tools:context=".HomeActivity">
 
-    <include layout="@layout/include_toolbar"
-        android:id="@+id/toolbar"/>
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/include_toolbar"/>
 
     <include layout="@layout/include_home"/>
+
+    <fragment
+        android:id="@+id/adFragment"
+        android:name="com.ediposouza.wifipasswordrecovery.ui.fragments.AdFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>

@@ -4,8 +4,8 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
 
-import com.ediposouza.wifipasswordrecovery.adapter.PasswordAdapter;
 import com.ediposouza.wifipasswordrecovery.model.PasswordItem;
+import com.ediposouza.wifipasswordrecovery.ui.adapter.PasswordAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,39 +30,39 @@ public class ReadWifiPasswordsAsync extends AsyncTask<Void, Void, List<PasswordI
     }
 
     @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-        mAdapter.clearPasswordItems();
-    }
-
-    @Override
     protected List<PasswordItem> doInBackground(Void... params) {
         List<PasswordItem> passwordsItems = new ArrayList<>();
         String ssid = "";
         String cmdCatWap = "cat " + Environment.getDataDirectory() + WAP_SUPPLICANT_DATA_PATH;
-        for(String line : Shell.SU.run(cmdCatWap)){
-            try{
-                if(line.contains(SSID_FIELD)){
+        for (String line : Shell.SU.run(cmdCatWap)) {
+            try {
+                if (line.contains(SSID_FIELD)) {
                     StringTokenizer st = new StringTokenizer(line, String.valueOf('"'));
                     st.nextToken();
                     ssid = st.nextToken();
-                }else if(line.contains(PSK_FIELD) || line.contains(WEP_KEY_FIELD)){
+                } else if (line.contains(PSK_FIELD) || line.contains(WEP_KEY_FIELD)) {
                     StringTokenizer st = new StringTokenizer(line, String.valueOf('"'));
-                    if(line.contains(String.valueOf('"'))){
+                    if (line.contains(String.valueOf('"'))) {
                         st.nextToken();
                         passwordsItems.add(new PasswordItem(ssid, st.nextToken()));
-                    }else{
+                    } else {
                         st.nextToken("=");
                         passwordsItems.add(new PasswordItem(ssid, st.nextToken("=")));
                     }
                 }
-            }catch(Exception e){
+            } catch (Exception e) {
                 if (e.getMessage() != null) {
                     Log.e("WPR ERROR", e.getMessage());
                 }
             }
         }
         return passwordsItems;
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        mAdapter.clearPasswordItems();
     }
 
     @Override

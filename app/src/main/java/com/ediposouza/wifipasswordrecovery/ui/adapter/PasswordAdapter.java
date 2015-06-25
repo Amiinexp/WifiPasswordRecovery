@@ -1,4 +1,4 @@
-package com.ediposouza.wifipasswordrecovery.adapter;
+package com.ediposouza.wifipasswordrecovery.ui.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,8 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ediposouza.wifipasswordrecovery.R;
-import com.ediposouza.wifipasswordrecovery.holder.PasswordViewHolder;
 import com.ediposouza.wifipasswordrecovery.model.PasswordItem;
+import com.ediposouza.wifipasswordrecovery.ui.holder.PasswordViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;

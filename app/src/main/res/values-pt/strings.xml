@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Wifi Password Recovery</string>
-    <string name="app_name_pro">Wifi Password Recovery Pro</string>
+
+    <!--Menu-->
+    <string name="mn_buy_pro">Atualizar</string>
     <string name="mn_more_apps">Mais Apps</string>
     <string name="mn_about">Sobre mim</string>
-    <string name="msg_label_mssid_password">%s senha</string>
-    <string name="msg_password_copied">Senha Copiada.</string>
+
+    <!--Views-->
     <string name="textview_looking_su">Buscando SU…</string>
     <string name="textview_su_not_found">Su não encontrado!</string>
-    <string name="mn_buy_pro">Atualizar</string>
+    <string name="label_ssid_password">%s senha</string>
+
+    <!--Toast-->
+    <string name="wpr_password_copied">Senha Copiada.</string>
+    <string name="iab_purchase_cancelled">Compra cancelada.</string>
+    <string name="iab_purchase_failure">Compra falhou.</string>
+    <string name="iab_purchase_pro_ok">Obrigado por comprar a versão pro!</string>
+    <string name="iab_query_fail">Falha ao obter sua lista de compras:</string>
+    <string name="iab_setup_fail">Falha ao configurar compras no aplicativo:</string>
 </resources>

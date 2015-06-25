@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--Menu-->
+    <string name="mn_about">Acerca de mí</string>
+    <string name="mn_more_apps">más aplicaciones</string>
+    <string name="mn_buy_pro">modernización</string>
+
+    <!--Views-->
+    <string name="label_ssid_password">%s contraseña</string>
+    <string name="textview_looking_su">Buscando SU…</string>
+    <string name="textview_su_not_found">SU no encontrado!</string>
+
+    <!--Toast-->
+    <string name="wpr_password_copied">Contraseña copiados.</string>
+    <string name="iab_purchase_cancelled">Compra cancelado.</string>
+    <string name="iab_purchase_failure">Compra falló.</string>
+    <string name="iab_purchase_pro_ok">Gracias por la compra la versión pro!</string>
+    <string name="iab_query_fail">Error al consultar el inventario: </string>
+    <string name="iab_setup_fail">Error al configurar las compras en app:</string>
+</resources>

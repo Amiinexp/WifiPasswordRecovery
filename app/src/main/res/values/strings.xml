@@ -1,24 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Wifi Password Recovery</string>
-    <string name="app_name_pro">Wifi Password Recovery Pro</string>
+    <!--Application-->
+    <string name="app_name" translatable="false">Wifi Password Recovery</string>
+    <string name="app_name_pro" translatable="false">Wifi Password Recovery Pro</string>
 
+    <string name="link_my_apps" translatable="false">https://play.google.com/store/apps/developer?id=Apps+By+Édipo</string>
+    <string name="link_about" translatable="false">http://ediposouza.com/wifi-password-recovery-no-google-play</string>
+    <string name="ad_unit_id" translatable="false">ca-app-pub-7881623561544201/6662370779</string>
+    <string name="ad_interstitial_id" translatable="false">ca-app-pub-7881623561544201/9322626777</string>
+
+    <!--Menu-->
+    <string name="mn_buy_pro">Upgrade</string>
     <string name="mn_more_apps">More Apps</string>
     <string name="mn_about">About me</string>
 
-    <string name="base64EncodedPublicKey" translatable="false">MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhDToB3YDCEgJPO1GavbLFTi4f3Ufq+hKJ3Zanka17TY/9dsraY7G4suBfipuXN7FquLnT7iEVGIn7IDBdEodfTZerJfYWOy4ar3pVuUgNy2dGCasWq08l4PkSLkfU1+MQp+0oIEJYuj5LxyK1FEZctgSuXF1oWDsIst8HzhPLNa+xAGFdwLwNUobobw+GUAo2Bju631xyH0gEd4OOXR9iZDLTcVS26VoPzDuWWlxi1bKcuEuMqZ23MvpIdja93n1kJXHLh/jYYPaeGCFm7t6k4XqZAVGDVMBV1MBq0F9UcCqJnijg5F/6WbvpX9bK5m76KjUccfdBmDMXyBVbZiICwIDAQAB</string>
-    <string name="link_my_apps" translatable="false">https://play.google.com/store/apps/developer?id=Apps+By+Édipo</string>
-    <string name="link_about" translatable="false">http://ediposouza.com/wifi-password-recovery-no-google-play</string>
-
+    <!--Views-->
     <string name="textview_looking_su">Looking for SU…</string>
     <string name="textview_su_not_found">SU not Found!</string>
+    <string name="label_ssid_password">%s password</string>
 
-    <string name="msg_label_mssid_password">%s password</string>
-    <string name="msg_password_copied">Password Copied.</string>
-    <string name="mn_buy_pro">Upgrade</string>
-    <string name="purchace_failure">Purchase failure.</string>
-    <string name="verify_purchase_failure">Verify purchases failure.</string>
-    <string name="recover_purchase_failure">Error recovering your purchase</string>
+    <!--Toast-->
+    <string name="wpr_password_copied">Password Copied.</string>
+    <string name="iab_purchase_cancelled">Purchase cancelled.</string>
+    <string name="iab_purchase_failure">Purchase failed.</string>
+    <string name="iab_setup_fail">Failed to set up in-app billing:</string>
+    <string name="iab_query_fail">Failed to query inventory: </string>
+    <string name="iab_purchase_pro_ok">Thanks for purchase pro version!</string>
 
 </resources>

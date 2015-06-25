@@ -18,6 +18,8 @@ package com.ediposouza.wifipasswordrecovery.inappbilling;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.ediposouza.wifipasswordrecovery.BuildConfig;
+
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -56,7 +58,7 @@ public class Security {
         if (TextUtils.isEmpty(signedData) || TextUtils.isEmpty(base64PublicKey) ||
                 TextUtils.isEmpty(signature)) {
             Log.e(TAG, "Purchase verification failed: missing data.");
-            return false;
+            return BuildConfig.DEBUG;
         }
 
         PublicKey key = Security.generatePublicKey(base64PublicKey);

@@ -12,7 +12,10 @@ import hotchemi.android.rate.OnClickButtonListener;
 /**
  * Created by edipo2s on 6/22/15.
  */
-public class WifiPasswordRecoveryApp extends Application {
+public class WPRApp extends Application {
+
+    public static final String iabpb = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhDToB3YDCEgJPO1GavbLFTi4f3Ufq+" +
+            "hKJ3Zanka17TY/9dsraY7G4suBfipuXN7FquLnT7iEVGIn7IDBdEodfTZerJfYWOy4ar3pVuUgNy2dGCasWq08l4PkSLkfU1";
 
     public static boolean proVersion;
 

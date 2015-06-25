@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ediposouza.wifipasswordrecovery" >
+<manifest
+    package="com.ediposouza.wifipasswordrecovery"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+
     <uses-permission android:name="com.android.vending.BILLING"/>
 
     <application
+        android:name=".WPRApp"
         android:allowBackup="true"
         android:icon="@drawable/ic_action_lock_open"
         android:label="@string/app_name"
-        android:name=".WifiPasswordRecoveryApp"
         android:theme="@style/AppTheme" >
         <activity
             android:name=".ui.HomeActivity"
