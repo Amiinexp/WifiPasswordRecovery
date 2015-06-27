@@ -47,7 +47,7 @@ public class HomeActivity extends AppCompatActivity
 
     private IabHelper mHelper;
     private MenuItem mnBuyItem;
-    private LinearLayout mAdFragment;
+    private LinearLayout mAdsLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +59,7 @@ public class HomeActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_action_lock_open);
 
-        mAdFragment = (LinearLayout) findViewById(R.id.adFragment);
+        mAdsLayout = (LinearLayout) findViewById(R.id.ads_layout);
         TextView mLookingSU = (TextView) findViewById(R.id.looking_su);
 
         PasswordAdapter mPasswordAdapter = new PasswordAdapter();
@@ -212,7 +212,7 @@ public class HomeActivity extends AppCompatActivity
         }
         WPRApp.proVersion = true;
         mnBuyItem.setVisible(false);
-        mAdFragment.setVisibility(View.GONE);
+        mAdsLayout.setVisibility(View.GONE);
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
             supportActionBar.setTitle(R.string.app_name_pro);

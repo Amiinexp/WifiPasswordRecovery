@@ -10,11 +10,18 @@
 
     <include layout="@layout/include_home"/>
 
-    <fragment
-        android:id="@+id/adFragment"
-        android:name="com.ediposouza.wifipasswordrecovery.ui.fragments.AdFragment"
+    <LinearLayout
+        android:id="@+id/ads_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"/>
+        android:layout_alignParentBottom="true">
+
+        <fragment
+            android:name="com.ediposouza.wifipasswordrecovery.ui.fragments.AdFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:layout="@layout/fragment_ads"/>
+
+    </LinearLayout>
 
 </RelativeLayout>
